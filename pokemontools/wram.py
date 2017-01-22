@@ -15,7 +15,7 @@ def separate_comment(line):
 
 
 def rgbasm_to_py(text):
-    return text.replace('$', '0x').replace('%', '0b')
+    return text.replace('$', '0x').replace('%1', '0b1').replace('%0', '0b0')
 
 
 def make_wram_labels(wram_sections):
@@ -37,7 +37,7 @@ class BSSReader:
     """
     sections  = []
     section   = None
-    address   = None
+    address   = 0
     macros    = {}
     constants = {}
 
@@ -84,7 +84,8 @@ class BSSReader:
             macro_sections = macro_reader.read_bss_sections(macro_text)
             self.section = macro_sections[-1]
             if self.section['labels']:
-                self.address = self.section['labels'][-1]['address'] + self.section['labels'][-1]['length']
+                self.address += self.section['labels'][-1]['length']
+                #self.address = self.section['labels'][-1]['address'] + self.section['labels'][-1]['length']
 
 
     def read_bss_sections(self, bss):

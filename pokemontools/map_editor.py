@@ -40,7 +40,7 @@ import gfx
 import wram
 import preprocessor
 import configuration
-config = configuration.Config()
+config = configuration.Config()#path = "../")
 
 
 def config_open(self, filename):
@@ -581,11 +581,11 @@ class Tileset:
             if self.config.version == 'crystal':
                 gfx.convert_to_png([filename.replace('.png', '.2bpp.lz')])
         self.img = Image.open(filename)
-        self.img.width, self.img.height = self.img.size
+        #self.img.width, self.img.height = self.img.size
         self.tiles = []
         cur_tile = 0
-        for y in xrange(0, self.img.height, self.tile_height):
-            for x in xrange(0, self.img.width, self.tile_width):
+        for y in xrange(0, self.img.size[1], self.tile_height):
+            for x in xrange(0, self.img.size[0], self.tile_width):
                 tile = self.img.crop((x, y, x + self.tile_width, y + self.tile_height))
 
                 if hasattr(self, 'palette_map') and hasattr(self, 'palettes'):
@@ -747,7 +747,7 @@ def connections(which_connections, header, l=0, config=config):
         }
 
     for d in ['north', 'south', 'west', 'east']:
-        if d.upper() in which_connections:
+        if d.upper() in which_connections and 'map_id' in directions[d]:
 
             if config.version == 'crystal':
                 attrs, l2 = read_header_macros_2(header[l:], attributes)
@@ -759,6 +759,9 @@ def connections(which_connections, header, l=0, config=config):
                 attrs, l2 = read_header_macros_2(header[l:], zip(conn_attrs[d], [d.upper() + '_MAP_CONNECTION'] * len(conn_attrs[d])))
                 l += l2
                 directions[d] = attrs
+                print directions
+                print d
+                print directions[d]
                 directions[d]['map_name'] = directions[d]['map_id'].lower().replace('_','')
 
     return directions, l
